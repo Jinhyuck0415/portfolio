@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <h1 class="mt-4">업체별 상품 관리 게시판
+<!--            <span>-->
+<!--                <a th:href="@{/product/register}">-->
+<!--                    <button class="btn btn-outline-primary" type="button">REGISTER</button>-->
+<!--                </a>-->
+<!--            </span>-->
+        </h1>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>이미지</th>
+                <th>상품명</th>
+                <th>사이즈</th>
+                <th>제작기간</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="dto : ${result.dtoList}">
+                <td>
+                    <a th:href="@{/product/read(productNo=${dto.productNo}, page=${result.page}, keyword = ${pageRequestDTO.keyword})}">
+                        [[${dto.productNo}]]
+                    </a>
+                </td>
+                <td><img th:if="${dto.imageDTOList.size() > 0 && dto.imageDTOList[0].path != null }"
+                         th:src="|/display?fileName=${dto.imageDTOList[0].getThumbnailURL()}|" ></td>
+                <td>[[${dto.product_name}]]</td>
+                <td>[[${dto.product_size}]]</td>
+                <td>[[${dto.product_period}]]</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!--        <form action="/product/list" id="searchForm" method="get">-->
+        <!--            <div class="input-group">-->
+        <!--                <input name="page" type="hidden" value="1">-->
+        <!--                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">-->
+        <!--                <div class="input-group-append" id="button-addon4">-->
+        <!--                    <button class="btn btn-outline-secondary btn-search" type="button">Search</button>-->
+        <!--                    <button class="btn btn-outline-secondary btn-clear" type="button">Clear</button>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </form>-->
+
+
+
+
+
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>이미지</th>
+                <th>상품명</th>
+                <th>사이즈</th>
+                <th>제작기간</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="dto : ${result.dtoList}">
+                <td>
+                    <a th:href="@{/product/read(productNo=${dto.productNo}, page=${result.page}, keyword = ${pageRequestDTO.keyword})}">
+                        [[${dto.productNo}]]
+                    </a>
+                </td>
+                <td><img th:if="${dto.imageDTOList.size() > 0 && dto.imageDTOList[0].path != null }"
+                         th:src="|/display?fileName=${dto.imageDTOList[0].getThumbnailURL()}|" ></td>
+                <td>[[${dto.product_name}]]</td>
+                <td>[[${dto.product_size}]]</td>
+                <td>[[${dto.product_period}]]</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <ul class="pagination h-100 justify-content-center align-items-center">
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" tabindex="-1"
+                   th:href="@{/manuproduct/list(page=${result.start -1},keyword = ${pageRequestDTO.keyword} ) }">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                <a class="page-link"
+                   th:href="@{/manuproduct/list(page=${page} , keyword = ${pageRequestDTO.keyword})}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link"
+                   th:href="@{/manuproduct/list(page=${result.end +1},keyword = ${pageRequestDTO.keyword})}">Next</a>
+            </li>
+        </ul>
+<!--        <script>-->
+<!--            var searchForm = $("#searchForm");-->
+<!--            $('.btn-search').click(function (e) {-->
+<!--                searchForm.submit();-->
+<!--            });-->
+
+<!--            $('.btn-clear').click(function (e) {-->
+<!--                searchForm.empty().submit();-->
+<!--            });-->
+<!--        </script>-->
+
+    </th:block>
+</th:block>

@@ -34,5 +34,4 @@ public class UserFavorite {
 
     @Column(length = 10, nullable = false, name = "product_no")
     private String productNo;
-
 }

@@ -13,6 +13,9 @@ import org.springframework.data.domain.Sort;
 public class PageRequestDTO {
     private int page;
     private int size;
+    private String keyword;
+    private String manuInfoNo;
+    private String productNo;
 
     public PageRequestDTO() {
         this.page = 1;

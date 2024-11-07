@@ -26,9 +26,14 @@ public class Service {
     @Column(length = 20, nullable = false)
     private String service_name;
 
-    @Column(length = 100, nullable = true)
-    private String service_thumbnail;
-
     @Column(length = 500, nullable = true)
     private String service_desc;
+
+    public void changeName(String name) {
+        this.service_name = name;
+    }
+
+    public void changeDesc(String desc) {
+        this.service_desc = desc;
+    }
 }

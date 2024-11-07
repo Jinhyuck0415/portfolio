@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!-- ========== card components start ========== -->
+        <section class="card-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>상품 정보</h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item"><a th:href="@{/product/list}">전체 상품 리스트</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            상품 정보
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== title-wrapper end ========== -->
+
+                <!-- ========== cards-styles start ========== -->
+                <div class="cards-styles">
+                    <!-- ========= card-style-1 start ========= -->
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6">
+                            <div class="card-style-1 mb-30">
+                                <div class="card-meta">
+                                    <div style="padding-right: 20px"><h4>[[${dto.product_name}]]</h4></div>
+                                    <div>
+                                        <span title="사이즈 - 30cm 초과" th:if="${dto.product_size == '대'}"
+                                              class="status-btn close-btn">[[${dto.product_size}]]</span>
+                                        <span title="사이즈 - 20cm ~ 30cm" th:if="${dto.product_size == '중'}"
+                                              class="status-btn info-btn">[[${dto.product_size}]]</span>
+                                        <span title="사이즈 - 20cm 미만" th:if="${dto.product_size == '소'}"
+                                              class="status-btn success-btn">[[${dto.product_size}]]</span>
+                                        <span title="제작기간" th:if="${dto.product_period != null}"
+                                              class="status-btn active-btn">[[${dto.product_period}]]</span>
+                                    </div>
+                                </div>
+                                <div class="card-image">
+                                    <a href="#0">
+                                        <img th:if="${dto.imageDTOList.size() > 0 && dto.imageDTOList[0].path != null }"
+                                             th:src="|/display?fileName=${dto.imageDTOList[0].getImageURL()}|">
+                                    </a>
+                                </div>
+                                <div class="card-content">
+                                    <p>
+                                        [[${dto.product_desc}]]
+                                    </p>
+                                </div>
+                                <div style="text-align: right; padding-right: 20px; padding-top: 20px">
+                                    <a th:href="@{/product/modify(productNo=${dto.productNo}, page=${requestDTO.page}, keyword = ${requestDTO.keyword} )}">
+                                        <button class="btn btn-primary" type="button">수정</button>
+                                    </a>
+
+                                    <a th:href="@{/product/list(page=${requestDTO.page},keyword = ${requestDTO.keyword} )}">
+                                        <button class="btn btn-info" type="button">리스트</button>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- end card-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </th:block>
+</th:block>

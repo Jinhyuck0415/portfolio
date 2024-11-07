@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>제품 검색</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+</head>
+<body>
+
+<a href="/user/register">가입</a>
+<a href="/login">로그인</a>
+
+
+<!-- 검색창 -->
+<div class="form-group row">
+    <div class="col-sm-5 mb-3 mb-sm-0">
+        <input class="form-control" id="autocomplete" placeholder="제품을 입력해주세요" type="text">
+        <button id="searchButton">검색</button>
+    </div>
+</div>
+
+<!-- 검색결과 자동완성 기능 -->
+<div id="searchResults"></div>
+
+<script type="text/javascript">
+    let productData = [];  // 제품 목록 데이터
+    let dataMap = new Map(); // 제품 이름과 번호를 매핑
+
+    // 제품 정보 가져오기
+    function autoProductInfo() {
+        $.ajax({
+            url: "/autoProductInfo",
+            type: "GET",
+            async: false, // 동기식으로 데이터를 가져옴
+            success: function (data) {
+                $(data).each(function () {
+                    dataMap.set(this.product_name, this.productNo);
+                    productData.push(this.product_name); // 제품 이름을 자동완성 데이터에 추가
+                })
+                console.log(dataMap);
+                console.log(productData);
+            },
+            error: function () {
+                alert("에러가 발생하였습니다.");
+            }
+        });
+    }
+
+    // 검색 결과 표시
+    function showSearchResults(query) {
+        const results = productData.filter(item => item.toLowerCase().includes(query.toLowerCase()));
+        let resultHTML = "<ul>";
+
+        results.forEach(function(item) {
+            const productNo = dataMap.get(item);
+            const productLink = "/search_onclick/" + productNo;
+
+            resultHTML += "<li><a href='" + productLink + "'>" + item + "</a></li>";
+            // resultHTML += "<li>" + item + "</li>";
+        });
+
+        resultHTML += "</ul>";
+        $("#searchResults").html(resultHTML);
+    }
+
+    $(document).ready(function() {
+
+        autoProductInfo();
+
+        // 검색창 자동완성 기능
+        $("#autocomplete").autocomplete({
+            source: productData,  // 자동완성 데이터로 제품 목록 사용
+            minLength: 1,  // 최소 1글자 이상 입력시 자동완선 시작
+            focus: function(event, ui) {
+                return false;
+            },
+            select: function(event, ui) {
+                console.log("선택한 제품:", ui.item.value);
+
+            }
+        });
+
+        // 검색 버튼 클릭 시 처리
+        $('#searchButton').click(function() {
+            let query = $("#autocomplete").val();
+            if(query) {
+                showSearchResults(query);
+            } else {
+                alert("검색어를 입력해주세요.");
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+
+        <!-- ========== table components start ========== -->
+        <section class="table-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>전체 업체 리스트
+                                    <span>
+                <a th:href="@{/manuinfo/register}">
+                    <button class="btn btn-outline-primary" type="button">업체 정보 등록</button>
+                </a>
+            </span>
+                                </h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <a th:href="@{/manuinfo/list}"> 전체 업체 리스트</a>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== title-wrapper end ========== -->
+
+                <!-- ========== tables-wrapper start ========== -->
+                <div class="tables-wrapper">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card-style mb-30">
+                                <h6 class="mb-10">전체 업체 리스트</h6>
+                                <p class="text-sm mb-20">
+                                    업체 정보를 등록하거나 수정, 삭제할 수 있습니다.
+                                </p>
+                                <div class="table-wrapper table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <h6>#</h6>
+                                            </th>
+                                            <th>
+                                                <h6>업체명</h6>
+                                            </th>
+                                            <th>
+                                                <h6>업체 사이트 주소</h6>
+                                            </th>
+                                            <th>
+                                                <h6>업체 서비스</h6>
+                                            </th>
+                                            <th>
+                                                <h6>관리자 할당 여부</h6>
+                                            </th>
+                                            <th>
+                                                <h6>관리 상품 리스트</h6>
+                                            </th>
+                                        </tr>
+                                        <!-- end table row-->
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="dto,dtoStat : ${result.dtoList}" style="cursor:pointer"
+                                            th:onclick="|location.href='@{/manuinfo/read(manuInfoNo=${dto.manuInfoNo})}'|">
+                                            <td class="min-width">
+                                                [[${dtoStat.count}]]
+                                            </td>
+                                            <td class="min-width">
+                                                [[${dto.manu_info_name}]]
+                                            </td>
+                                            <td class="min-width">
+                                                [[${dto.manu_info_site}]]
+                                            </td>
+                                            <td class="min-width">
+                                                <th:block th:if="${dto.serviceDTOList.size() > 0}">
+                                                    <ul>
+                                                        <li class="main-btn active-btn-outline rounded-full btn-hover" style="padding: 6px 12px" th:each="serviceDTO : ${dto.serviceDTOList}" th:title="${serviceDTO.service_desc}">[[${serviceDTO.service_name}]]</li>
+                                                    </ul>
+                                                </th:block>
+                                            </td>
+                                            <td class="min-width">
+                                                <th:block th:if="${dto.manuMemNo == 'admin'}">×</th:block>
+                                                <th:block th:if="${dto.manuMemNo != 'admin'}">○</th:block>
+                                            </td>
+                                            <td class="min-width">
+                                                <a th:href="@{/mproduct/list(manuInfoNo=${dto.manuInfoNo})}">
+                                                    <button class="main-btn primary-btn btn-hover"
+                                                            style="padding-top: 6px; padding-bottom: 6px" type="button">관리 상품 리스트
+                                                    </button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <!-- end table row -->
+                                        </tbody>
+                                    </table>
+                                    <!-- end table -->
+                                </div>
+                            </div>
+                            <!-- end card -->
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== tables-wrapper end ========== -->
+            </div>
+            <!-- end container -->
+        </section>
+        <!-- ========== table components end ========== -->
+
+        <ul class="pagination h-100 justify-content-center align-items-center">
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" tabindex="-1"
+                   th:href="@{/manuinfo/list(page=${result.start -1} ) }">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                <a class="page-link"
+                   th:href="@{/manuinfo/list(page=${page} )}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link"
+                   th:href="@{/manuinfo/list(page=${result.end +1})}">Next</a>
+            </li>
+        </ul>
+
+        <script th:inline="javascript">
+            var msg = [[${msg}]];
+            console.log(msg);
+
+            if (msg) {
+                $(".modal").modal();
+            }
+
+            // var searchForm = $("#searchForm");
+            // $('.btn-search').click(function (e) {
+            //     searchForm.submit();
+            // });
+            //
+            // $('.btn-clear').click(function (e) {
+            //     searchForm.empty().submit();
+            // });
+        </script>
+
+    </th:block>
+</th:block>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!-- ========== table components start ========== -->
+        <section class="table-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>업체 정보 수정</h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <a th:href="@{/manuinfo/list}"> 전체 업체 리스트</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            업체 정보 수정
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="tables-wrapper">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card-style mb-30">
+                                        <form th:action="@{/manuinfo/register}" th:method="post">
+                                            <input type="hidden" name="page" th:value="${requestDTO.page}">
+                                            <input type="hidden" name="manuInfoNo" th:value="${dto.manuInfoNo}">
+                                            <input name="manuMemNo" type="hidden" th:value="${dto.manuMemNo}">
+
+                                            <div class="input-style-1">
+                                                <label>업체명</label>
+                                                <input class="form-control" name="manu_info_name"
+                                                       th:value="${dto.manu_info_name}" placeholder="업체명을 입력하세요."
+                                                       type="text">
+                                            </div>
+                                            <div class="input-style-1">
+                                                <label>업체 사이트 주소</label>
+                                                <input class="form-control" name="manu_info_site"
+                                                       th:value="${dto.manu_info_site}" placeholder="업체 사이트 주소를 입력하세요."
+                                                       type="text">
+                                            </div>
+                                            <!-- 이후 업체 멤버 로그인이 되면 그 정보를 가져와서 넣어야함. -->
+                                            <input class="form-control" name="manuMemNo" type="hidden" value="admin">
+                                            <div style="text-align: right">
+                                                <button style="padding-bottom: 6px; padding-top: 6px"
+                                                        class="main-btn primary-btn btn-hover modifyBtn" type="button">
+                                                    수정
+                                                </button>
+                                                <button style="padding-bottom: 6px; padding-top: 6px"
+                                                        class="main-btn secondary-btn btn-hover listBtn" type="button">
+                                                    목록
+                                                </button>
+                                                <button style="padding-bottom: 6px; padding-top: 6px"
+                                                        class="main-btn danger-btn btn-hover removeBtn" type="button">제거
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script th:inline="javascript">
+            var actionForm = $("form"); //form 태그 객체
+            $(".removeBtn").click(function () {
+                actionForm
+                    .attr("action", "/manuinfo/remove")
+                    .attr("method", "post");
+
+                actionForm.submit();
+            });
+
+            $(".modifyBtn").click(function () {
+                if (!confirm("수정하시겠습니까?")) {
+                    return;
+                }
+
+                actionForm
+                    .attr("action", "/manuinfo/modify")
+                    .attr("method", "post")
+                    .submit();
+            });
+
+            $(".listBtn").click(function () {
+                var pageInfo = $("input[name='page']");
+
+                actionForm.empty(); //form 태그의 모든 내용을 지우고
+                actionForm.append(pageInfo); //목록 페이지 이동에 필요한 내용을 다시 추가
+                actionForm
+                    .attr("action", "/manuinfo/list")
+                    .attr("method", "get");
+
+                // console.log(actionForm.html());//먼저 확인 후에 주석처리
+                actionForm.submit(); //확인 후 주석 해제
+            });
+        </script>
+
+
+    </th:block>
+</th:block>

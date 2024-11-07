@@ -9,17 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Log4j2
 @RequestMapping("/sample/")
 public class SampleController {
-
     @GetMapping("/all")
-    public void exAll(){
-        log.info("exAll.....");
+    public void exAll() {
+        log.info("exAll..............");
     }
+
     @GetMapping("/member")
-    public void exMember(){
-        log.info("exMember....");
+    public void exMember() {
+        log.info("exMember...............");
     }
+
     @GetMapping("/admin")
-    public void exAdmin(){
-        log.info("exAdmin....");
+    public void exAdmin() {
+        log.info("exAdmin..............");
     }
 }

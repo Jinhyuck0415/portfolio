@@ -43,5 +43,5 @@ public class OrderBoard {
 
     @Column(length = 500, nullable = false)
     private String order_board_answer;
-}
+    }
 

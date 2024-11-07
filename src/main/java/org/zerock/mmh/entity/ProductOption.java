@@ -23,15 +23,12 @@ public class ProductOption {
     @Column(name = "pro_option_no")
     private String proOptionNo;
 
-    @Column(length = 10, nullable = false, name="product_no")
-    private String productNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manuProductNo")
+    private ManufacturerProduct manufacturerProduct;
 
-    @Column(length = 10, nullable = false,name = "option_no")
-    private String optionNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "optionNo")
+    private Option option;
 
-    @Column(length = 10, nullable = false, name="manu_info_no")
-    private String manuInfoNo;
-
-    @Column(nullable = true, name = "pro_option_price")
-    private int proOptionPrice;
 }

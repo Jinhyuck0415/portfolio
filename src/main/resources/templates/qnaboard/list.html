@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+
+        <!-- ========== table components start ========== -->
+        <section class="table-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>QNA 게시판
+                                    <span>
+                <a th:href="@{/qnaboard/register}">
+                    <button class="btn btn-outline-primary" type="button">문의 등록</button>
+                </a>
+            </span>
+                                </h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <a th:href="@{/qnaboard/list}"> QNA 게시판</a>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <!--  검색 창 -->
+<!--                        <form action="/product/list" id="searchForm" method="get" style="padding-bottom: 20px">-->
+<!--                            <div class="input-group">-->
+<!--                                <input name="page" type="hidden" value="1">-->
+<!--                                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}"-->
+<!--                                       placeholder="검색할 단어를 입력하세요.">-->
+<!--                                <div class="input-group-append" id="button-addon4">-->
+<!--                                    <button class="btn btn-outline-secondary btn-search" type="button">Search</button>-->
+<!--                                    <button class="btn btn-outline-secondary btn-clear" type="button">Clear</button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+                        <!--  검색 창 종료 -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== title-wrapper end ========== -->
+
+                <!-- ========== tables-wrapper start ========== -->
+                <div class="tables-wrapper">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card-style mb-30">
+                                <h6 class="mb-10">QNA 게시판</h6>
+                                <p class="text-sm mb-20">
+                                    문의를 등록할 수 있습니다. 답변이 달린 글은 답변이 되었다고 표시됩니다.
+                                </p>
+                                <div class="table-wrapper table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <h6>#</h6>
+                                            </th>
+                                            <th>
+                                                <h6>답변</h6>
+                                            </th>
+                                            <th>
+                                                <h6>카테고리</h6>
+                                            </th>
+                                            <th>
+                                                <h6>제목</h6>
+                                            </th>
+                                            <th>
+                                                <h6>작성자</h6>
+                                            </th>
+                                            <th>
+                                                <h6>등록일</h6>
+                                            </th>
+                                        </tr>
+                                        <!-- end table row-->
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="dto,dtoStat : ${result.dtoList}" style="cursor:pointer"
+                                            th:onclick="|location.href='@{/qnaboard/read(qnaBoardNo=${dto.qnaBoardNo})}'|">
+                                            <td class="min-width">
+                                                [[${dtoStat.count}]]
+                                            </td>
+                                            <td class="min-width">
+                                                <th:block th:if="${dto.qna_board_answer == null}">×</th:block>
+                                                <th:block th:if="${dto.qna_board_answer != null}">○</th:block>
+                                            </td>
+                                            <td class="min-width">
+                                                <span th:if="${dto.qna_board_category == '주문'}" style="padding-bottom: 6px; padding-top: 6px; padding-left: 37px; padding-right: 37px" class="main-btn primary-btn-outline rounded-full btn-hover">[[${dto.qna_board_category}]]</span>
+                                                <span th:if="${dto.qna_board_category == '배송'}" style="padding-bottom: 6px; padding-top: 6px; padding-left: 37px; padding-right: 37px" class="main-btn success-btn-outline rounded-full btn-hover">[[${dto.qna_board_category}]]</span>
+                                                <span th:if="${dto.qna_board_category == '상품정보'}" style="padding-bottom: 6px; padding-top: 6px; padding-left: 24px; padding-right: 24px" class="main-btn secondary-btn-outline rounded-full btn-hover">[[${dto.qna_board_category}]]</span>
+                                                <span th:if="${dto.qna_board_category == '결제'}" style="padding-bottom: 6px; padding-top: 6px; padding-left: 37px; padding-right: 37px" class="main-btn danger-btn-outline rounded-full btn-hover">[[${dto.qna_board_category}]]</span>
+                                                <span th:if="${dto.qna_board_category == '회원'}" style="padding-bottom: 6px; padding-top: 6px; padding-left: 37px; padding-right: 37px" class="main-btn info-btn-outline rounded-full btn-hover">[[${dto.qna_board_category}]]</span>
+                                                <span th:if="${dto.qna_board_category == '기타'}" style="padding-bottom: 6px; padding-top: 6px; padding-left: 37px; padding-right: 37px" class="main-btn dark-btn-outline rounded-full btn-hover">[[${dto.qna_board_category}]]</span>
+
+                                            </td>
+                                            <td class="min-width">
+                                                [[${dto.qna_board_title}]]
+                                            </td>
+                                            <td class="min-width">
+                                                [[${dto.userMemNo}]]
+                                            </td>
+                                            <td class="min-width">
+                                                [[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]
+                                            </td>
+                                        </tr>
+                                        <!-- end table row -->
+                                        </tbody>
+                                    </table>
+                                    <!-- end table -->
+                                </div>
+                            </div>
+                            <!-- end card -->
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== tables-wrapper end ========== -->
+            </div>
+            <!-- end container -->
+        </section>
+        <!-- ========== table components end ========== -->
+
+        <!--페이지 출력 -->
+        <ul class="pagination h-100 justify-content-center align-items-center">
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" tabindex="-1"
+                   th:href="@{/qnaboard/list(page=${result.start -1},keyword = ${pageRequestDTO.keyword} ) }">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                <a class="page-link"
+                   th:href="@{/qnaboard/list(page=${page} , keyword = ${pageRequestDTO.keyword})}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link"
+                   th:href="@{/qnaboard/list(page=${result.end +1},keyword = ${pageRequestDTO.keyword})}">Next</a>
+            </li>
+        </ul>
+<!--        <script>-->
+<!--            var searchForm = $("#searchForm");-->
+<!--            $('.btn-search').click(function (e) {-->
+<!--                searchForm.submit();-->
+<!--            });-->
+
+<!--            $('.btn-clear').click(function (e) {-->
+<!--                searchForm.empty().submit();-->
+<!--            });-->
+<!--        </script>-->
+
+    </th:block>
+</th:block>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!-- ========== tab components start ========== -->
+        <section class="tab-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>문의글 수정</h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item">
+                                            <a th:href="@{/qnaboard/list}">QNA 게시판</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            문의글 수정
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== title-wrapper end ========== -->
+
+                <!-- ========== form-elements-wrapper start ========== -->
+                <form th:action="@{/qnaboard/modify}" th:method="post">
+                    <div class="form-elements-wrapper">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <!-- input style start -->
+                                <input type="hidden" name="page" th:value="${requestDTO.page}">
+                                <input type="hidden" name="qnaBoardNo" th:value="${dto.qnaBoardNo}">
+                                <!-- end input -->
+                                <div class="card-style mb-30">
+                                    <div class="select-style-1">
+                                        <label>카테고리</label>
+                                        <div class="select-position">
+                                            <select name="qna_board_category">
+                                                <option th:selected="${dto.qna_board_category==null}">-----</option>
+                                                <option th:selected="${dto.qna_board_category=='주문'}" value="주문">주문
+                                                </option>
+                                                <option th:selected="${dto.qna_board_category=='배송'}" value="배송">배송
+                                                </option>
+                                                <option th:selected="${dto.qna_board_category=='상품정보'}" value="상품정보">
+                                                    상품정보
+                                                </option>
+                                                <option th:selected="${dto.qna_board_category=='결제'}" value="결제">결제
+                                                </option>
+                                                <option th:selected="${dto.qna_board_category=='회원'}" value="회원">회원
+                                                </option>
+                                                <option th:selected="${dto.qna_board_category=='기타'}" value="기타">기타
+                                                </option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <!-- end input -->
+                                    <div class="input-style-1">
+                                        <label>제목</label>
+                                        <input name="qna_board_title" placeholder="제목을 입력하세요"
+                                               th:value="${dto.qna_board_title}" type="text"/>
+                                    </div>
+                                    <!-- end input -->
+                                    <div class="input-style-1">
+                                        <label>내용</label>
+                                        <th:block th:if="${dto.qna_board_answer== null}">
+                                        <textarea class="form-control" name="qna_board_content" rows="5">[[${dto.qna_board_content}]]</textarea>
+                                        </th:block>
+                                        <th:block th:if="${dto.qna_board_answer!= null}">
+                                            <textarea class="form-control" name="qna_board_content" rows="5" readonly>[[${dto.qna_board_content}]]</textarea>
+                                            <p class="text-danger text-sm">※이미 답변이 달린 문의글은 수정할 수 없습니다.</p>
+                                        </th:block>
+                                    </div>
+                                    <div class="input-style-1">
+                                        <label>작성자</label>
+                                        <input name="userMemNo" readonly th:value="${dto.userMemNo}"
+                                               placeholder="작성자를 입력하세요" type="text"/>
+                                    </div>
+                                    <!-- end input -->
+                                    <div style="text-align: right">
+                                        <button class="main-btn primary-btn modifyBtn btn-hover"
+                                                style="padding-bottom: 6px; padding-top: 6px" type="button">수정
+                                        </button>
+                                        <button class="main-btn info-btn listBtn btn-hover"
+                                                style="padding-bottom: 6px; padding-top: 6px" type="button">목록
+                                        </button>
+                                        <button class="main-btn danger-btn removeBtn btn-hover"
+                                                style="padding-bottom: 6px; padding-top: 6px" type="button">삭제
+                                        </button>
+
+                                    </div>
+                                </div>
+                                <!-- end card -->
+                                <!-- ======= input style end ======= -->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <script th:inline="javascript">
+            var actionForm = $("form"); //form 태그 객체
+            $(".removeBtn").click(function () {
+                actionForm
+                    .attr("action", "/qnaboard/remove")
+                    .attr("method", "post");
+
+                actionForm.submit();
+            });
+
+            $(".modifyBtn").click(function () {
+                if (!confirm("수정하시겠습니까?")) {
+                    return;
+                }
+
+                actionForm
+                    .attr("action", "/qnaboard/modify")
+                    .attr("method", "post")
+                    .submit();
+            });
+
+            $(".listBtn").click(function () {
+                var pageInfo = $("input[name='page']");
+
+                actionForm.empty(); //form 태그의 모든 내용을 지우고
+                actionForm.append(pageInfo); //목록 페이지 이동에 필요한 내용을 다시 추가
+                actionForm
+                    .attr("action", "/qnaboard/list")
+                    .attr("method", "get");
+
+                // console.log(actionForm.html());//먼저 확인 후에 주석처리
+                actionForm.submit(); //확인 후 주석 해제
+            });
+        </script>
+    </th:block>
+</th:block>

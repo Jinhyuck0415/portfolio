@@ -11,22 +11,24 @@ import org.zerock.mmh.generator.IdGenerator;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"manufacturerInfo","service"})
 @Table(name = "tbl_manufacturer_service")
 public class ManufacturerService {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "org.zerock.mmh.generator.IdGenerator",
             parameters = {@Parameter(name = IdGenerator.METHOD, value = "SEQUENCE"),
-                    @Parameter(name = IdGenerator.SEQUENCENAME, value = "user_favorite_seq"),
+                    @Parameter(name = IdGenerator.SEQUENCENAME, value = "manufacturer_service_seq"),
                     @Parameter(name = IdGenerator.PREFIX, value = "MS")})
     @GeneratedValue(generator = "idGenerator")
-    @Column(name="manu_service_no")
+    @Column(name = "manu_service_no")
     private String manuServiceNo;
 
-    @Column(length = 10, nullable = false, name = "manu_info_no")
-    private String manuInfoNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manuInfoNo")
+    private ManufacturerInfo manufacturerInfo;
 
-    @Column(length = 10, nullable = false, name = "service_no")
-    private String serviceNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="serviceNo")
+    private mService service;
 
 }

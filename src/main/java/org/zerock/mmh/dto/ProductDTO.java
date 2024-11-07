@@ -1,18 +1,24 @@
 package org.zerock.mmh.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+import java.util.ArrayList;
+import java.util.List;
+
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
+@Data
 public class ProductDTO {
     private String productNo;
-    private String productName;       // Changed to camelCase
-    private String productThumbnail;   // Changed to camelCase
-    private String productSize;        // Changed to camelCase
-    private String productDesc;        // Changed to camelCase
-    private String productPeriod;      // Changed to camelCase
+    private String product_name;
+    private String product_size;
+    private String product_desc;
+    private String product_period;
 
+    @Builder.Default
+    private List<ProductImageDTO> imageDTOList = new ArrayList<>();
 }

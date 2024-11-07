@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!-- ========== table components start ========== -->
+        <section class="table-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>관리 상품 리스트 </h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li aria-current="page" class="breadcrumb-item active">
+                                            <a th:href="@{/mproduct/list}"> 관리 상품 리스트</a>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== title-wrapper end ========== -->
+                <!-- ========== tables-wrapper start ========== -->
+                <!-- 현재 상품 시작-->
+                <form id="current-product">
+                    <div class="tables-wrapper">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card-style mb-30">
+                                    <h6 class="mb-10">관리 중인 상품 리스트</h6>
+                                    <p class="text-sm mb-20">
+                                        현재 업체에서 관리중인 상품 리스트입니다.
+                                    </p>
+                                    <input id="manufacturereInfoNO" th:value="${pageRequestDTO.manuInfoNo}"
+                                           type="hidden">
+                                    <div class="table-wrapper table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    <h6>#</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>상품명</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>이미지</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>상품 옵션</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>상품 사이즈</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>제작기간</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>수정/삭제</h6>
+                                                </th>
+                                            </tr>
+                                            <!-- end table row-->
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="dto, dtoStat : ${result.dtoList}">
+                                                <td>[[${dtoStat.count}]]</td>
+                                                <td>[[${dto.product.product_name}]]</td>
+                                                <td>이미지</td>
+                                                <td>상품 옵션 리스트</td>
+                                                <td>[[${dto.product.product_size}]]</td>
+                                                <td>[[${dto.product.product_period}]]</td>
+                                                <td>
+                                                    <div class="action">
+                                                        <button class="text-primary">
+                                                            <i class="lni lni-pencil"></i>
+                                                        </button>
+                                                        <button class="text-danger"
+                                                                onclick="productDelete(this.value)"
+                                                                th:value="${dto.product.productNo}" type="button">
+                                                            <i class="lni lni-trash-can"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <ul class="pagination h-100 justify-content-center align-items-center">
+                                            <li class="page-item " th:if="${result.prev}">
+                                                <a class="page-link" tabindex="-1"
+                                                   th:href="@{/mproduct/list(page=${result.start -1},manuInfoNo = ${pageRequestDTO.manuInfoNo} ) }">Previous</a>
+                                            </li>
+
+                                            <li th:class=" 'page-item ' + ${result.page == page?'active':''} "
+                                                th:each="page: ${result.pageList}">
+                                                <a class="page-link"
+                                                   th:href="@{/mproduct/list(page=${page} , manuInfoNo = ${pageRequestDTO.manuInfoNo})}">
+                                                    [[${page}]]
+                                                </a>
+                                            </li>
+
+                                            <li class="page-item" th:if="${result.next}">
+                                                <a class="page-link"
+                                                   th:href="@{/mproduct/list(page=${result.end +1},manuInfoNo = ${pageRequestDTO.manuInfoNo})}">Next</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!--현재 상품 끝 -->
+                <!--기존 상품 시작 -->
+                <form id="original-product">
+                    <div class="tables-wrapper">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card-style mb-30">
+                                    <h6 class="mb-10">기존 상품 리스트</h6>
+                                    <p class="text-sm mb-20">
+                                        사이트 내에 등록되어 있는 상품 리스트입니다. 여기서 원하는 것을 관리상품으로 추가할 수 있습니다.
+                                    </p>
+                                    <input id="manuInfoNO" th:value="${pageRequestDTO.manuInfoNo}"
+                                           type="hidden">
+                                    <div class="table-wrapper table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    <h6>#</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>상품명</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>이미지</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>상품 사이즈</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>제작기간</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>추가</h6>
+                                                </th>
+                                            </tr>
+                                            <!-- end table row-->
+                                            </thead>
+                                            <tbody id="tableBody">
+
+                                            </tbody>
+                                        </table>
+                                        <ul class="pagination h-100 justify-content-center align-items-center"
+                                            id="paging-secondary">
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+                <!--기존 상품 끝 -->
+            </div>
+        </section>
+        <script type="text/javascript">
+
+            // 상품 삭제
+            function productDelete(productNo) {
+                manuInfoNo = $('#manufacturereInfoNO').val();
+                console.log(manuInfoNo);
+                console.log(productNo);
+                removeProductToManuInfo(manuInfoNo, productNo);
+            }
+
+            function productAdd(productNo){
+                manuInfoNo = $('#manufacturereInfoNO').val();
+                console.log(manuInfoNo);
+                console.log(productNo);
+                registerProductToManuInfo(manuInfoNo, productNo)
+            }
+
+            //관리 상품을 추가해주는 메소드
+            function registerProductToManuInfo(manuInfoNo, productNo) {
+
+                $.ajax({
+                    type       : 'POST',
+                    url        : '/api/post/manuProduct/' + manuInfoNo + '/' + productNo,
+                    dataType   : 'TEXT',
+                    contentType: 'application/json; charset=utf-8',
+                }).done(function () {
+                    alert("관리상품이 추가되었습니다.")
+                    window.location.reload();
+                }).fail(function (error) {
+                    alert(JSON.stringify(error));
+                });
+            }
+
+            //관리 상품을 제거해주는 메소드
+            function removeProductToManuInfo(manuInfoNo, productNo) {
+
+                $.ajax({
+                    type       : 'DELETE',
+                    url        : '/api/post/manuProduct/' + manuInfoNo + '/' + productNo,
+                    dataType   : 'TEXT',
+                    contentType: 'application/json; charset=utf-8',
+                }).done(function () {
+                    alert("관리상품이 제거되었습니다.")
+                    window.location.reload();
+                }).fail(function (error) {
+                    alert(JSON.stringify(error));
+                });
+            }
+
+        </script>
+        <script>
+
+
+            // 상품 정보 가져오기
+
+            $.ajax({
+                url    : "/currentProductInfo",
+                type   : "GET",
+                async  : false,                  // 데이터를 먼저 가져와서 변수에 세팅해줘야 autocomplete 에서 해당 데이터를 인지한다
+                success: function (data) {
+                    count = 1;
+                    $(data).each(function () {
+                        var tableTd = '<tr>';
+                        tableTd += '<td>' + count++ + '</td>';
+                        tableTd += '<td>' + this.product_name + '</td>';
+                        tableTd += '<td>이미지...</td>';
+                        tableTd += '<td>' + this.product_size + '</td>';
+                        tableTd += '<td>' + this.product_period + '</td>';
+                        tableTd += '<td><div class="action"><button onclick="productAdd(this.value)" ' +
+                            'class="text-primary" type="button" name="productNo" value="' + this.productNo + '">추가</div></td>';
+                        tableTd += '</tr>'
+                        $('#tableBody').append(tableTd);
+                    })
+                }, error(e) {
+                    alert("에러가 발생하였습니다");
+                }
+            })
+
+        </script>
+
+    </th:block>
+</th:block>

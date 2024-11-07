@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+
+        <!-- ========== table components start ========== -->
+        <section class="table-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>전체 상품 리스트
+                                    <span>
+                <a th:href="@{/product/register}">
+                    <button class="btn btn-outline-primary" type="button">상품 등록</button>
+                </a>
+            </span>
+                                </h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <a th:href="@{/product/list}"> 전체 상품 리스트</a>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <!--  검색 창 -->
+                        <form action="/product/list" id="searchForm" method="get" style="padding-bottom: 20px">
+                            <div class="input-group">
+                                <input name="page" type="hidden" value="1">
+                                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}"
+                                       placeholder="검색할 단어를 입력하세요.">
+                                <div class="input-group-append" id="button-addon4">
+                                    <button class="btn btn-outline-secondary btn-search" type="button">Search</button>
+                                    <button class="btn btn-outline-secondary btn-clear" type="button">Clear</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!--  검색 창 종료 -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== title-wrapper end ========== -->
+
+                <!-- ========== tables-wrapper start ========== -->
+                <div class="tables-wrapper">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card-style mb-30">
+                                <h6 class="mb-10">상품 게시판</h6>
+                                <p class="text-sm mb-20">
+                                    상품을 등록하거나 수정, 삭제할 수 있습니다. 여기에 등록된 설명과 이미지를 모두가 공통으로 사용합니다.
+                                </p>
+                                <div class="table-wrapper table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <h6>#</h6>
+                                            </th>
+                                            <th>
+                                                <h6>이미지</h6>
+                                            </th>
+                                            <th>
+                                                <h6>상품명</h6>
+                                            </th>
+                                            <th>
+                                                <h6>사이즈</h6>
+                                            </th>
+                                            <th>
+                                                <h6>제작기간</h6>
+                                            </th>
+                                        </tr>
+                                        <!-- end table row-->
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="dto,dtoStat : ${result.dtoList}" style="cursor:pointer"
+                                            th:onclick="|location.href='@{/product/read(productNo=${dto.productNo}, page=${result.page}, keyword = ${pageRequestDTO.keyword})}'|">
+                                            <td class="min-width">
+                                                [[${dtoStat.count}]]
+                                            </td>
+                                            <td class="min-width">
+                                                <div class="employee-image">
+                                                    <img style="width:50px; height: 50px; object-fit: cover"
+                                                         th:if="${dto.imageDTOList.size() > 0 && dto.imageDTOList[0].path != null }"
+                                                         th:src="|/display?fileName=${dto.imageDTOList[0].getThumbnailURL()}|">
+                                                </div>
+                                            </td>
+                                            <td class="min-width">
+                                                [[${dto.product_name}]]
+                                            </td>
+                                            <td class="min-width">
+                                                <span th:if="${dto.product_size == '대'}" class="status-btn close-btn">[[${dto.product_size}]]</span>
+                                                <span th:if="${dto.product_size == '중'}" class="status-btn info-btn">[[${dto.product_size}]]</span>
+                                                <span th:if="${dto.product_size == '소'}" class="status-btn success-btn">[[${dto.product_size}]]</span>
+                                            </td>
+                                            <td class="min-width">
+                                                [[${dto.product_period}]]
+                                            </td>
+                                        </tr>
+                                        <!-- end table row -->
+                                        </tbody>
+                                    </table>
+                                    <!-- end table -->
+                                </div>
+                            </div>
+                            <!-- end card -->
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== tables-wrapper end ========== -->
+            </div>
+            <!-- end container -->
+        </section>
+        <!-- ========== table components end ========== -->
+
+        <!--페이지 출력 -->
+        <ul class="pagination h-100 justify-content-center align-items-center">
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" tabindex="-1"
+                   th:href="@{/product/list(page=${result.start -1},keyword = ${pageRequestDTO.keyword} ) }">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
+                <a class="page-link"
+                   th:href="@{/product/list(page=${page} , keyword = ${pageRequestDTO.keyword})}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link"
+                   th:href="@{/product/list(page=${result.end +1},keyword = ${pageRequestDTO.keyword})}">Next</a>
+            </li>
+        </ul>
+        <script>
+            var searchForm = $("#searchForm");
+            $('.btn-search').click(function (e) {
+                searchForm.submit();
+            });
+
+            $('.btn-clear').click(function (e) {
+                searchForm.empty().submit();
+            });
+        </script>
+
+    </th:block>
+</th:block>

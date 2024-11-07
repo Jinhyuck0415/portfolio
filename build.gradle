@@ -37,14 +37,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-
     }
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
@@ -59,6 +57,13 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    //thumbnailator 사용
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.12'
+
+    //Spring Security 추가
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
 
 }
 
@@ -69,10 +74,9 @@ tasks.named('test') {
 clean {
     delete file('src/main/generated')
 }
-//tasks.withType(JavaCompile){     //배포시 문제예방
-//    options.compilerArgs << "=parameters"
-//}
-//compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client'
-//
-//compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5'
-//compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time'
+
+//매핑 네임 문제 해결용(아직 문제는 일어나지 않았지만)
+tasks.withType(JavaCompile){
+    options.compilerArgs << "-parameters"
+}
+

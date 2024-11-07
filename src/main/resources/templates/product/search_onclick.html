@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 상세</title>
+</head>
+<body>
+<h1>상품 상세 페이지</h1>
+
+<div id="productDetails">
+    <!-- 여기에 제품 정보를 표시 -->
+</div>
+
+<script type="text/javascript">
+    // URL에서 productNo 파라미터를 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const productNo = urlParams.get('productNo');
+
+    // 상품 정보를 서버에서 가져오기
+
+    $.ajax({
+        url : "/currentProductInfo",
+        type : "GET",
+        async : false,
+        success: function(data) {
+            $(data).each(function () {
+                var tableTd  = '<tr>';
+                tableTd += '<td>' + this.product_name + '</td>';
+                tableTd += '<td>' + this.product_desc + '/td>';
+                tableTd += '<td>' + this.product_size + '</td>';
+                tableTd += '<td>' + this.product_period + '</td>';
+                tableTd += '</tr>'
+                $('#tableBody').append(tableTd);
+            })
+        }, error(e){
+            alert("에러가 발생하였습니다.")
+        }
+    })
+
+</script>
+</body>
+</html>

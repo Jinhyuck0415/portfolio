@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!-- ========== table components start ========== -->
+        <section class="table-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>QNA 게시글 읽기</h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <a th:href="@{/qnaboard/list}"> QNA 게시판</a>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="tables-wrapper">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card-style mb-30">
+                                        <div class="mb-2">
+                                            <span th:if="${dto.qna_board_category == '주문'}"
+                                                  class="status-btn close-btn">[[${dto.qna_board_category}]]</span>
+                                            <span th:if="${dto.qna_board_category == '배송'}"
+                                                  class="status-btn info-btn">[[${dto.qna_board_category}]]</span>
+                                            <span th:if="${dto.qna_board_category == '상품정보'}"
+                                                  class="status-btn active-btn">[[${dto.qna_board_category}]]</span>
+                                            <span th:if="${dto.qna_board_category == '결제'}"
+                                                  class="status-btn success-btn">[[${dto.qna_board_category}]]</span>
+                                            <span th:if="${dto.qna_board_category == '회원'}"
+                                                  class="status-btn primary-btn">[[${dto.qna_board_category}]]</span>
+                                            <span th:if="${dto.qna_board_category == '기타'}"
+                                                  class="status-btn secondary-btn">[[${dto.qna_board_category}]]</span>
+                                        </div>
+                                        <div class="mb-2">
+                                            <h3>[[${dto.qna_board_title}]]</h3>
+                                        </div>
+                                        <div>
+                                            <div>
+                                                <span style="width: 80px">작성자</span><span>[[${dto.userMemNo}]]</span>
+                                            </div>
+                                            <div>
+                                                <span style="width: 80px">등록시간</span><span><a href="#"
+                                                                                              th:title="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm')}">[[${#temporals.format(dto.regDate,
+                                                    'yyyy/MM/dd')}]]</a>
+                                            </div>
+                                        </div>
+
+                                        <hr class="mt-2">
+                                        <p class="text-medium mb-20">
+                                            [[${dto.qna_board_content}]]
+                                        </p>
+
+
+                                        <th:block th:if="${dto.qna_board_answer!= null}">
+                                            <h6 class="mb-2">답변</h6>
+                                            <div class="input-style-1">
+                                                 <textarea class="form-control" name="qna_board_answer"
+                                                           rows="5" readonly>[[${dto.qna_board_answer}]]</textarea>
+                                            </div>
+                                        </th:block>
+                                        <th:block th:if="${dto.qna_board_answer== null}">
+                                            <form action="/guestbook/reply" method="post">
+                                                <div class="row align-items-center">
+                                                    <div class="input-style-1 col-md-10">
+                                                        <input type="hidden" name="page" th:value="${requestDTO.page}">
+                                                        <input type="hidden" name="qnaBoardNo"
+                                                               th:value="${dto.qnaBoardNo}">
+                                                        <label>답변</label>
+                                                        <textarea class="form-control" name="qna_board_answer"
+                                                                  rows="5"></textarea>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <button class="main-btn primary-btn btn-reply btn-hover"
+                                                                style="width: 100%; height: 100%" type="button">답변 등록
+                                                        </button>
+                                                    </div>
+
+                                            </form>
+                                        </th:block>
+                                    </div>
+
+                                    <div style="text-align: right">
+                                        <a th:href="@{/qnaboard/modify(qnaBoardNo=${dto.qnaBoardNo}, page=${requestDTO.page})}">
+                                            <button class="main-btn primary-btn btn-hover"
+                                                    style="padding-bottom: 6px; padding-top: 6px" type="button">수정
+                                            </button>
+                                        </a>
+
+                                        <a th:href="@{/qnaboard/list(page=${requestDTO.page})}">
+                                            <button class="main-btn secondary-btn btn-hover"
+                                                    style="padding-bottom: 6px; padding-top: 6px" type="button">리스트
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </div>
+        </section>
+        <script th:inline="javascript">
+            var actionForm = $("form"); //form 태그 객체
+
+            $(".btn-reply").click(function () {
+                if (!confirm("답변하시겠습니까?")) {
+                    return;
+                }
+                actionForm
+                    .attr("action", "/qnaboard/reply")
+                    .attr("method", "post")
+                    .submit();
+            });
+        </script>
+
+
+    </th:block>
+</th:block>

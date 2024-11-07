@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!-- ========== tab components start ========== -->
+        <section class="tab-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>문의글 작성</h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item">
+                                            <a th:href="@{/qnaboard/list}">QNA 게시판</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <a th:href="@{/qnaboard/register}">문의글 작성</a>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== title-wrapper end ========== -->
+
+                <!-- ========== form-elements-wrapper start ========== -->
+                <form th:action="@{/qnaboard/register}" th:method="post">
+                    <div class="form-elements-wrapper">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <!-- input style start -->
+                                <div class="card-style mb-30">
+                                    <div class="select-style-1">
+                                        <label>카테고리</label>
+                                        <div class="select-position">
+                                            <select name="qna_board_category">
+                                                <option>-----</option>
+                                                <option value="주문">주문</option>
+                                                <option value="배송">배송</option>
+                                                <option value="상품정보">상품정보</option>
+                                                <option value="결제">결제</option>
+                                                <option value="회원">회원</option>
+                                                <option value="기타">기타</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <!-- end input -->
+                                    <div class="input-style-1">
+                                        <label>제목</label>
+                                        <input name="qna_board_title" placeholder="제목을 입력하세요" type="text"/>
+                                    </div>
+                                    <!-- end input -->
+                                    <div class="input-style-1">
+                                        <label>내용</label>
+                                        <textarea class="form-control" name="qna_board_content" rows="5"></textarea>
+                                    </div>
+                                    <div class="input-style-1">
+                                        <label>작성자</label>
+                                        <input name="userMemNo" placeholder="작성자를 입력하세요" type="text"/>
+                                    </div>
+                                    <!-- end input -->
+                                    <div style="text-align: right">
+                                        <button type="submit" class="main-btn primary-btn btn-hover">등록</button>
+                                    </div>
+                                </div>
+                                <!-- end card -->
+                                <!-- ======= input style end ======= -->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </th:block>
+</th:block>

@@ -6,6 +6,9 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.zerock.mmh.generator.IdGenerator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Getter
 @Builder
@@ -27,10 +30,10 @@ public class UserMember {
     @Column(length = 20, nullable = false)
     private String user_mem_id;
 
-    @Column(length = 100, nullable = false)
-    private String user_mem_pw;
+    @Column(name="user_mem_pw", length = 100, nullable = false)
+    private String password;
 
-    @Column(length = 50, nullable = false, unique = true)
+    @Column(length = 50, nullable = false)
     private String user_mem_mail;
 
     @Column(length = 20, nullable = false)
@@ -47,4 +50,13 @@ public class UserMember {
 
     @Column(nullable = false)
     private char user_mem_gender;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<MemberRole> roleSet = new HashSet<>();
+
+    public void addMemberRole(MemberRole role) {
+        roleSet.add(role);
+    }
+
 }

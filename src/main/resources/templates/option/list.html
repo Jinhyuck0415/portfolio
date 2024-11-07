@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!-- ========== tab components start ========== -->
+        <section class="tab-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>옵션 관리</h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">상품 관리</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <a th:href="@{/option/list}"> 옵션 관리</a>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== title-wrapper end ========== -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card-style mb-30">
+                                    <h6 class="mb-10">옵션 등록</h6>
+                                    <p class="text-sm mb-20">
+                                        옵션을 새로 등록할 수 있습니다.
+                                    </p>
+                                    <!-- 입력 화면 -->
+                                    <div style="padding-bottom: 20px">
+                                        <form>
+                                            <div class="row align-items-center">
+                                                <div style="width: 30%">
+                                                    <input id="option_name" class="form-control" name="option_name"
+                                                           placeholder="옵션명을 입력하세요." type="text">
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <input id="option_desc" class="form-control" name="option_desc"
+                                                           placeholder="옵션에 대한 설명을 입력하세요."
+                                                           type="text">
+                                                </div>
+                                                <div style="width: 20%">
+                                                    <button id="btn-option-register"
+                                                            class="main-btn primary-btn btn-hover"
+                                                            type="button" style="padding-top: 6px; padding-bottom: 6px">
+                                                        등록
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card-style mb-30">
+                                    <h6 class="mb-10">옵션 리스트</h6>
+                                    <p class="text-sm mb-20">
+                                        등록되어 있는 옵션을 수정하거나 삭제할 수 있습니다.
+                                    </p>
+                                    <div class="table-wrapper table-responsive">
+                                        <table class="table striped-table">
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>
+                                                    <h6>옵션명</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>옵션 설명</h6>
+                                                </th>
+                                                <th>
+                                                    <h6>수정/삭제</h6>
+                                                </th>
+                                            </tr>
+                                            <!-- end table row-->
+                                            </thead>
+                                            <tbody class="option" th:each="dto, dtoStat : ${result.dtoList}">
+                                            <tr>
+                                                <td>
+                                                    #[[${dtoStat.count}]]
+                                                </td>
+                                                <td>
+                                                    <p>[[${dto.option_name}]]</p>
+                                                </td>
+                                                <td>
+                                                    <p>[[${dto.option_desc}]]</p>
+                                                </td>
+                                                <td>
+                                                    <div class="action">
+                                                        <button class="text-primary" data-bs-toggle="collapse"
+                                                                role="button"
+                                                                th:attr="data-bs-target='.multi-collapse'+${dto.optionNo}">
+                                                            <i class="lni lni-pencil"></i>
+                                                        </button>
+                                                        <button class="text-danger"
+                                                                onclick="main.optionDelete(this.value)"
+                                                                th:value="${dto.optionNo}" type="button">
+                                                            <i class="lni lni-trash-can"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <!-- end table row -->
+                                            <tr>
+                                                <td colspan="4">
+                                                    <form aria-expanded="false" class="collapse"
+                                                          th:classappend="'multi-collapse'+${dto.optionNo}">
+                                                        <input id="no" th:value="${dto.optionNo}" type="hidden">
+                                                        <div class="row align-items-center" style="width: 99%">
+                                                            <div style="width: 30%">
+                                                                <input class="form-control" id="name"
+                                                                       th:value="${dto.option_name}">
+                                                            </div>
+                                                            <div style="width: 50%">
+                                                                <input class="form-control" id="desc"
+                                                                       th:value="${dto.option_desc}">
+                                                            </div>
+                                                            <div style="width: 20%">
+                                                                <button id="btn-option-modify"
+                                                                        class="main-btn primary-btn btn-hover"
+                                                                        type="button"
+                                                                        style="padding-top: 6px; padding-bottom: 6px">
+                                                                    수정 완료
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            <!-- end table row -->
+                                            </tbody>
+                                        </table>
+                                        <!-- end table -->
+                                    </div>
+                                </div>
+                                <!-- end card -->
+                            </div>
+                            <!-- end col -->
+
+
+                            <!-- 옵션 리스트 -->
+
+                            <ul class="pagination h-100 justify-content-center align-items-center">
+                                <li class="page-item " th:if="${result.prev}">
+                                    <a class="page-link" tabindex="-1"
+                                       th:href="@{/option/list(page=${result.start -1} ) }">Previous</a>
+                                </li>
+
+                                <li th:class=" 'page-item ' + ${result.page == page?'active':''} "
+                                    th:each="page: ${result.pageList}">
+                                    <a class="page-link"
+                                       th:href="@{/option/list(page=${page} )}">
+                                        [[${page}]]
+                                    </a>
+                                </li>
+
+                                <li class="page-item" th:if="${result.next}">
+                                    <a class="page-link"
+                                       th:href="@{/option/list(page=${result.end +1})}">Next</a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            const main = {
+                init: function () {
+                    const _this = this;
+
+                    //옵션 저장
+                    $('#btn-option-register').on('click', function () {
+                        _this.optionRegister();
+                    });
+
+                    //옵션 수정
+                    document.querySelectorAll('#btn-option-modify').forEach(function (item) {
+                        item.addEventListener('click', function () {
+                            const form = this.closest('form');
+                            _this.optionModify(form);
+                        });
+                    });
+
+
+                },
+
+                //옵션 저장
+                optionRegister: function () {
+                    const data = {
+                        option_name: $('#option_name').val(),
+                        option_desc: $('#option_desc').val()
+
+                    }
+                    console.log(data.option_name);
+                    console.log(data.option_desc);
+
+                    if (!data.option_name || data.option_name.trim() === "") {
+                        alert("옵션명에 공백 또는 입력하지 않은 부분이 있습니다.");
+                        return false;
+                    } else {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/api/post/option',
+                            dataType: 'TEXT',
+                            contentType: 'application/json; charset=utf-8',
+                            data: JSON.stringify(data)
+                        }).done(function () {
+                            alert("옵션이 등록되었습니다.")
+                            // $('#option-list-box').load(location.href + ' #option-list-box');
+                            window.location.reload();
+                        }).fail(function (error) {
+                            alert(JSON.stringify(error));
+                        });
+                    }
+                },
+                //옵션 수정
+                optionModify: function (form) {
+                    const data = {
+                        optionNo: form.querySelector('#no').value,
+                        option_name: form.querySelector('#name').value,
+                        option_desc: form.querySelector('#desc').value,
+                    }
+
+                    console.log(data.optionNo);
+                    console.log(data.option_name);
+                    console.log(data.option_desc);
+
+                    if (!data.option_name || data.option_name.trim() === "") {
+                        alert("옵션명에 공백 또는 입력하지 않은 부분이 있습니다.");
+                        return false;
+                    }
+                    const con_check = confirm("수정하시겠습니까?");
+                    if (con_check === true) {
+                        $.ajax({
+                            type: "PUT",
+                            url: '/api/post/option/' + data.optionNo,
+                            dataType: 'TEXT',
+                            contentType: 'application/json; charset=utf-8',
+                            data: JSON.stringify(data)
+                        }).done(function () {
+                            alert("옵션이 수정되었습니다.");
+                            window.location.reload();
+                            // $('#option-list-box').load(location.href + ' #option-list-box');
+                        }).fail(function (error) {
+                            alert(JSON.stringify(error));
+                        })
+                    }
+                },
+
+
+                //옵션 삭제
+                optionDelete: function (optionNo) {
+                    const con_check = confirm("삭제하시겠습니까?")
+                    if (con_check === true) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: '/api/post/option/' + optionNo,
+                            dataType: "TEXT",
+                            contentType: 'application/json; charset=utf-8'
+                        }).done(function () {
+                            alert("옵션이 삭제되었습니다.");
+                            window.location.reload();
+                        }).fail(function (error) {
+                            alert(JSON.stringify(error));
+                        })
+                    }
+                }
+
+
+            };
+
+            main.init();
+
+        </script>
+
+    </th:block>
+</th:block>

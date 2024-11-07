@@ -26,9 +26,6 @@ public class Product {
     @Column(length = 20, nullable = false)
     private String product_name;
 
-    @Column(length = 100, nullable = true)
-    private String product_thumbnail;
-
     @Column(length = 10, nullable = false)
     private String product_size;
 
@@ -38,5 +35,20 @@ public class Product {
     @Column(length = 20, nullable = true)
     private String product_period;
 
+    public void changeName(String name) {
+        this.product_name = name;
+    }
+
+    public void changeSize(String size) {
+        this.product_size = size;
+    }
+
+    public void changeDesc(String desc) {
+        this.product_desc = desc;
+    }
+
+    public void changePeriod(String period) {
+        this.product_period = period;
+    }
 
 }

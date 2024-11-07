@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="pragma" content="no-cache">
+
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content} )}">
+
+    <th:block th:fragment="content">
+
+        <!-- ========== tab components start ========== -->
+        <section class="tab-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>상품 등록</h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">상품 관리</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            <a th:href="@{/product/register}">상품 등록</a>
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- ========== title-wrapper end ========== -->
+
+
+                <form th:action="@{/product/register}" th:method="post">
+                    <div class="form-elements-wrapper">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <!-- input style start -->
+                                <div class="card-style mb-30">
+                                    <div class="input-style-1">
+                                        <label>상품명</label>
+                                        <input name="product_name" placeholder="상품명을 입력하세요" type="text"/>
+                                    </div>
+                                    <!-- end input -->
+                                    <div class="select-style-1">
+                                        <label>상품 사이즈</label>
+                                        <div class="select-position">
+                                            <select name="product_size">
+                                                <option>-----</option>
+                                                <option value="대">대 - 30cm 초과</option>
+                                                <option value="중">중 - 20 ~ 30cm</option>
+                                                <option value="소">소 - 20cm 미만</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- end input -->
+                                    <div class="input-style-1">
+                                        <label>상품 제작기간</label>
+                                        <input class="form-control" name="product_period"
+                                               placeholder="상품제작 기간을 입력하세요(예시 : 2 ~ 3일)" type="text">
+                                    </div>
+                                    <!-- end input -->
+                                    <div class="input-style-1">
+                                        <label>상품 설명</label>
+                                        <textarea class="form-control" name="product_desc" rows="5"></textarea>
+                                    </div>
+                                    <!-- end input -->
+                                    <div class="form-group fileForm">
+                                        <label>이미지 파일</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input files" id="fileInput">
+                                            <label class="custom-file-label" data-browse="Browse"></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="uploadResult" style="padding-top: 30px">
+                                        <ul>
+
+                                        </ul>
+                                    </div>
+                                    <!-- end input -->
+                                    <div style="text-align: right">
+                                        <button type="submit" class="main-btn primary-btn btn-hover btn btn-primary">등록</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <script>
+
+            $(document).ready(function (e) {
+
+                var regex = new RegExp("(.*?)\.(exe|sh|zip|alz|tiff)$");
+                var maxSize = 10485760; //10MB
+
+                function checkExtension(fileName, fileSize) {
+
+                    if (fileSize >= maxSize) {
+                        alert("파일 사이즈 초과");
+                        return false;
+                    }
+
+                    if (regex.test(fileName)) {
+                        alert("해당 종류의 파일은 업로드할 수 없습니다.");
+                        return false;
+                    }
+                    return true;
+                }
+
+                $(".custom-file-input").on("change", function () {
+
+                    var fileName = $(this).val().split("\\").pop();
+
+                    var formData = new FormData();
+
+                    var inputFile = $(this);
+
+                    var files = inputFile[0].files;
+
+                    var appended = false;
+
+                    for (var i = 0; i < files.length; i++) {
+
+                        if (!checkExtension(files[i].name, files[i].size)) {
+                            return false;
+                        }
+                        formData.append("uploadFiles", files[i]);
+                        appended = true;
+                    }
+
+                    //upload를 하지 않는다.
+                    if (!appended) {
+                        return;
+                    }
+
+                    for (var value of formData.values()) {
+                        console.log(value);
+                    }
+
+                    //실제 업로드 부분
+                    //upload ajax
+                    $.ajax({
+                        url: '/uploadAjax',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        cache: false, //캐시 처리
+                        type: 'POST',
+                        dataType: 'json',
+                        async: false,
+                        timeout: 600000,
+                        success: function (result) {
+                            console.log(result);
+                            showResult(result);
+
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus);
+                        }
+                    }); //$.ajax
+                }); //end change event
+
+
+                function showResult(uploadResultArr) {
+
+                    var uploadUL = $(".uploadResult ul");
+
+                    var str = "";
+
+                    $(uploadResultArr).each(function (i, obj) {
+
+                        str += "<li data-name='" + obj.imgName + "' data-path='" + obj.path + "' data-uuid='" + obj.uuid + "'>";
+                        str + " <div>";
+                        str += "<button type='button' data-file=\'" + obj.imageURL + "\' "
+                        str += "class='status-btn danger-btn-outline rounded-full btn-hover btn-warning btn-sm'>X</button><br>";
+                        str += "<img src='/display?fileName=" + obj.thumbnailURL + "'>";
+                        str += "</div>";
+                        str + "</li>";
+                    });
+
+                    uploadUL.append(str);
+                }
+
+                $(".uploadResult ").on("click", "li button", function (e) {
+
+                    console.log("delete file");
+
+                    var targetFile = $(this).data("file");
+
+                    var targetLi = $(this).closest("li");
+
+                    $.ajax({
+                        url: '/removeFile',
+                        data: {fileName: targetFile},
+                        dataType: 'text',
+                        type: 'POST',
+                        success: function (result) {
+                            targetLi.remove();
+                        }
+                    }); //$.ajax
+                });
+
+
+                //prevent submit
+                $(".btn-primary").on("click", function (e) {
+                    e.preventDefault();
+
+                    var str = "";
+
+                    $(".uploadResult li").each(function (i, obj) {
+                        var target = $(obj);
+
+                        str += "<input type='hidden' name='imageDTOList[" + i + "].imgName' value='" + target.data('name') + "'>";
+
+                        str += "<input type='hidden' name='imageDTOList[" + i + "].path' value='" + target.data('path') + "'>";
+
+                        str += "<input type='hidden' name='imageDTOList[" + i + "].uuid' value='" + target.data('uuid') + "'>";
+
+                    });
+
+                    //태그들이 추가된 것을 확인한 후에 comment를 제거
+                    $(".box").html(str);
+                    $("form").submit();
+
+                });
+
+
+            }); //document ready
+        </script>
+
+    </th:block>
+
+</th:block>

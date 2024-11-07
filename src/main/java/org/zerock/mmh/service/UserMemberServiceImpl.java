@@ -2,8 +2,10 @@ package org.zerock.mmh.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zerock.mmh.dto.UserMemberDTO;
+import org.zerock.mmh.entity.MemberRole;
 import org.zerock.mmh.entity.UserMember;
 import org.zerock.mmh.repository.UserMemberRepository;
 
@@ -12,52 +14,29 @@ import org.zerock.mmh.repository.UserMemberRepository;
 @RequiredArgsConstructor
 public class UserMemberServiceImpl implements UserMemberService {
 
-    private final UserMemberRepository userMemberRepository;
+    private final UserMemberRepository repository;
+    private final  PasswordEncoder passwordEncoder;
 
     @Override
-    public UserMember saveMember(UserMember userMember) {
-        return userMemberRepository.save(userMember);
+    public String register(UserMemberDTO dto){
+        UserMember entity = dtoToEntity(dto);
+        entity.addMemberRole(MemberRole.USER);
+        repository.save(entity);
+        return entity.getUserMemNo();
     }
 
-    @Override
-    public String join(UserMemberDTO userMemberDTO) {
-        log.info("Joining user with details: {}", userMemberDTO);
-
-        String email = "";
-
-        if (userMemberDTO.getUserMemMailDirect() != null && !userMemberDTO.getUserMemMailDirect().isEmpty()) {
-            // 직접 입력된 도메인 처리
-            email = userMemberDTO.getUserMemMail() + "@" + userMemberDTO.getUserMemMailDirect(); // '@' 추가
-        } else {
-            // 선택된 도메인 처리
-            if (userMemberDTO.getUserMemMailSelect() == null || userMemberDTO.getUserMemMailSelect().isEmpty() || "none".equals(userMemberDTO.getUserMemMailSelect())) {
-                throw new IllegalArgumentException("도메인을 선택하거나 직접 입력하세요.");
-            }
-            email = userMemberDTO.getUserMemMail() + "@" + userMemberDTO.getUserMemMailSelect();
-        }
-
-        // 이메일 형식 확인
-        if (email.isEmpty() || !email.contains("@") || !email.contains(".")) {
-            log.error("Invalid email format: {}", email);
-            throw new IllegalArgumentException("잘못된 이메일 형식입니다.");
-        }
-
-        UserMember userMember = UserMember.builder()
-                .user_mem_id(userMemberDTO.getUserMemId())
-                .user_mem_pw(userMemberDTO.getUserMemPw())
-                .user_mem_mail(email) // 조합된 이메일 사용
-                .user_mem_name(userMemberDTO.getUserMemName())
-                .user_mem_address(userMemberDTO.getUserMemAddress())
-                .user_mem_phone(userMemberDTO.getUserMemPhone())
-                .user_mem_age(userMemberDTO.getUserMemAge())
-                .user_mem_gender(userMemberDTO.getUserMemGender())
+    public UserMember dtoToEntity(UserMemberDTO dto) {
+        UserMember entity = UserMember.builder()
+                .userMemNo(dto.getUserMemNo())
+                .user_mem_id(dto.getUser_mem_id())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .user_mem_mail(dto.getUser_mem_mail())
+                .user_mem_name(dto.getUser_mem_name())
+                .user_mem_address(dto.getUser_mem_address())
+                .user_mem_phone(dto.getUser_mem_phone())
+                .user_mem_age(dto.getUser_mem_age())
+                .user_mem_gender(dto.getUser_mem_gender())
                 .build();
-
-        return saveMember(userMember).getUserMemNo();
-    }
-
-    @Override
-    public UserMember login(UserMemberDTO.LoginDTO loginDTO) {
-        return null;
+        return entity;
     }
 }

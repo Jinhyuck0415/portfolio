@@ -47,4 +47,7 @@ public class QnaBoard extends BaseEntity {
     public void changeCategory(String category) {
         this.qna_board_category = category;
     }
+    public void changeAnswer(String answer) {
+        this.qna_board_answer = answer;
+    }
 }

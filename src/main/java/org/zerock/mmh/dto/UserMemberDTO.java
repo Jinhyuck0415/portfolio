@@ -1,50 +1,22 @@
 package org.zerock.mmh.dto;
 
-import lombok.*;
-import org.antlr.v4.runtime.misc.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserMemberDTO {
-
     private String userMemNo;
-
-    @NotNull
-    private String userMemId;
-
-    @NotNull
-    private String userMemPw;
-
-    @NotNull
-    private String userMemMail; // 기본 이메일 아이디
-
-    @NotNull
-    private String userMemName;
-
-    @NotNull
-    private String userMemAddress;
-
-    @NotNull
-    private String userMemPhone;
-
-    private int userMemAge;
-
-    @NotNull
-    private char userMemGender;
-
-    private String userMemMailFull; // 조합된 이메일
-    private String userMemMailSelect; // 선택된 도메인
-    private String userMemMailDirect; // 직접 입력된 이메일 부분
-
-    public class LoginDTO {
-        @NotNull
-        private String userMemId;
-
-        @NotNull
-        private String userMemPw;
-    }
+    private String user_mem_id;
+    private String password;
+    private String user_mem_mail;
+    private String user_mem_name;
+    private String user_mem_address;
+    private String user_mem_phone;
+    private int user_mem_age;
+    private char user_mem_gender;
 }

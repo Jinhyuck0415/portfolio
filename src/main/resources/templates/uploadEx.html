@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+
+
+        <div class="form-group row">
+            <div class="col-sm-5 mb-3 mb-sm-0">
+                <input class="form-control form-control-user autocomplete-input" id="autocomplete"
+                       placeholder="서비스를 입력해주세요"
+                       type="text">
+            </div>
+        </div>
+        <!-- 여기에 서비스가 출력된다.-->
+        <div class="form-group" id="selectService"></div>
+
+
+        <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"
+              rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+
+        <script type="text/javascript">
+
+            // 서비스 변수
+            let tData=[];
+            let dataMap = new Map();
+
+            // 서비스 정보 가져오기
+            function autoServiceInfo(e) {
+                $.ajax({
+                    url : "/autoServiceInfo",
+                    type: "GET",
+                    // data   : {"product": selectProductValue},
+                    async  : false,                  // 데이터를 먼저 가져와서 변수에 세팅해줘야 autocomplete 에서 해당 데이터를 인지한다
+                    success: function (data) {
+                        $(data).each(function () {
+                            dataMap.set(this.service_name, this.serviceNo);
+                            tData.push(this.service_name);
+                        })
+
+                        console.log(dataMap);
+                        console.log(tData);
+
+                    }, error(e) {
+                        alert("에러가 발생하였습니다");
+                    }
+                });
+            }
+
+            // 서비스 삭제
+            $(document).on('click', '.btn-icon-split', function () {
+                // 배열에 서비스 재정의
+                tData.push($(this)[0].innerText)
+                // 선택한 서비스 삭제
+                $(this).remove();
+                count--;
+            });
+
+
+            // // 서비스 수
+            let count = 0;
+            $(document).ready(function () {
+                // 서비스 정보가져오기
+                autoServiceInfo();
+
+                // autocomplete - 자동완성기능 설정하기
+                $("#autocomplete").autocomplete({
+                    // 사용자가 입력한 데이터와 비교
+                    source: tData,
+                    // 사용자가 입력한 데이터가 한글자일때부터
+                    minLength: 1,
+                    // 방향키로 내리다보면 선택하지 않았는데 선택이 된다 false 로 지정
+                    focus: function (event, ui) {
+                        return false;
+                    },
+                    //데이터 선택했을때 실행
+                    select: function (event, ui) {
+
+
+                        count++;
+                        // 선택한 서비스를 출력해주기 위함
+                        $("#selectService").append('<a href="#" class="btn btn-light btn-icon-split"><span class="icon text-gray-600"><i class="fas fa-times"></i></span><span class="text" name = "serviceNo" value="'+dataMap.get(ui.item.value)+'" id="uiValue' + count + '">' + ui.item.value + '</span></a>')
+
+                        // label과 value로 사용할 경우 사용, 다른 코드들도 맞춰서 수정해야한다
+                        //$("#selectUser").append('<a href="#" class="btn btn-light btn-icon-split"><span class="icon text-gray-600"><i class="fas fa-times"></i></span><span class="text" id="uiValue'+ count +'">' + ui.item.label +'</span></a>')
+
+
+                        // 선택한 서비스 배열에서 삭제
+                        tData = tData.filter((e) => e !== ui.item.value);
+
+                        // 재정의한 배열을 다시 바인딩
+                        $("#autocomplete").autocomplete({source: tData});
+                    }
+                });
+
+            });
+        </script>
+
+    </th:block>
+</th:block>

@@ -33,5 +33,16 @@ public class ManufacturerInfo {
     @Column(length = 10, nullable = false, name = "manu_mem_no")
     private String manuMemNo;
 
-    private int Bookmark = 0;
+
+    public void changeName(String name){
+        this.manu_info_name = name;
+    }
+    public void changeSite(String site){
+        this.manu_info_site = site;
+    }
+
+    //관리자용
+    public void changeMemNo(String memNo){
+        this.manuMemNo = memNo;
+    }
 }

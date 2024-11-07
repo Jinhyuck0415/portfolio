@@ -33,9 +33,9 @@ public class IdGenerator implements IdentifierGenerator, Configurable {
         method = ConfigurationHelper.getString(METHOD, params);
         sequenceName = ConfigurationHelper.getString(SEQUENCENAME, params);
         prefix = ConfigurationHelper.getString(PREFIX, params);
-        System.out.println("method: " + method);
-        System.out.println("sequenceName: " + sequenceName);
-        System.out.println("prefix: " + prefix);
+//        System.out.println("method: " + method);
+//        System.out.println("sequenceName: " + sequenceName);
+//        System.out.println("prefix: " + prefix);
 
     }
 

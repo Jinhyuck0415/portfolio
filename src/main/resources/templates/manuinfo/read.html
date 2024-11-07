@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic2 :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!-- ========== table components start ========== -->
+        <section class="table-components">
+            <div class="container-fluid">
+                <!-- ========== title-wrapper start ========== -->
+                <div class="title-wrapper pt-30">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="title">
+                                <h2>업체 정보</h2>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="col-md-6">
+                            <div class="breadcrumb-wrapper">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item">
+                                            <a href="#0">Dashboard</a>
+                                        </li>
+                                        <li aria-current="page" class="breadcrumb-item active">
+                                            <a th:href="@{/manuinfo/list}"> 전체 업체 리스트</a>
+                                        </li>
+                                        <li aria-current="page" class="breadcrumb-item active">
+                                            업체 정보
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                        <!-- end col -->
+                        <div class="tables-wrapper">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card-style mb-30">
+                                        <div class="mb-2">
+                                            <h3>[[${dto.manu_info_name}]] </h3>
+                                        </div>
+                                        <p class="text-medium mb-20">
+                                            [[${dto.manu_info_site}]]
+                                        </p>
+                                        <form>
+                                            <input id="manufacturereInfoNO" th:value="${dto.manuInfoNo}" type="hidden">
+
+                                            <div class="form-group row mb-2">
+                                                <div class="col-sm-5 mb-3 mb-sm-0">
+                                                    <input class="form-control form-control-user autocomplete-input"
+                                                           id="autocomplete"
+                                                           placeholder="서비스를 입력해주세요"
+                                                           type="text">
+                                                </div>
+                                            </div>
+                                            <!-- 여기에 서비스가 출력된다.-->
+                                            <div class="form-group" id="selectService">
+                                                <th:block th:if="${dto.serviceDTOList.size() > 0}">
+
+                                                    <a class="btn btn-light btn-icon-split" href="#"
+                                                       th:each="serviceDTO, serviceDTOStat : ${dto.serviceDTOList}">
+                                                        <span class="icon text-gray-600"><i
+                                                                class="fas fa-times"></i></span>
+                                                        <span class="text" name="serviceNo"
+                                                              th:id="${'uiValue'+serviceDTOStat.count}"
+                                                              th:value="${serviceDTO.serviceNo}">
+                            [[${serviceDTO.service_name}]]
+                        </span>
+                                                    </a>
+
+                                                </th:block>
+                                            </div>
+                                        </form>
+                                        <div style="text-align: right">
+                                            <a th:href="@{/manuinfo/modify(manuInfoNo=${dto.manuInfoNo}, page=${requestDTO.page})}">
+                                                <button class="main-btn primary-btn btn-hover"
+                                                        style="padding-top: 6px; padding-bottom: 6px" type="button">수정
+                                                </button>
+                                            </a>
+
+                                            <a th:href="@{/manuinfo/list(page=${requestDTO.page})}">
+                                                <button class="main-btn secondary-btn btn-hover"
+                                                        style="padding-top: 6px; padding-bottom: 6px" type="button">리스트
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"
+              rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+        <script type="text/javascript">
+
+            // 서비스 변수
+            let tData = [];
+            let dataMap = new Map();
+
+            // 서비스 정보 가져오기
+            function autoServiceInfo(e) {
+                $.ajax({
+                    url    : "/autoServiceInfo",
+                    type   : "GET",
+                    async  : false,                  // 데이터를 먼저 가져와서 변수에 세팅해줘야 autocomplete 에서 해당 데이터를 인지한다
+                    success: function (data) {
+                        $(data).each(function () {
+                            dataMap.set(this.service_name, this.serviceNo);
+                            tData.push(this.service_name);
+                        })
+
+                        console.log(dataMap);
+                        console.log(tData);
+
+                    }, error(e) {
+                        alert("에러가 발생하였습니다");
+                    }
+                });
+            }
+
+            // 서비스 삭제
+            $(document).on('click', '.btn-icon-split', function (event) {
+                manuInfoNo = $('#manufacturereInfoNO').val();
+                console.log(event);
+                serviceNo = dataMap.get($(this)[0].innerText);
+                console.log(serviceNo);
+                removeServiceToManuInfo(manuInfoNo, serviceNo);
+                // 배열에 서비스 재정의
+                tData.push($(this)[0].innerText)
+                // 선택한 서비스 삭제
+                $(this).remove();
+                count--;
+            });
+
+
+            // // 서비스 수
+            let count = 0;
+            $(document).ready(function () {
+                // 서비스 정보가져오기
+                autoServiceInfo();
+                manuInfoNo = $('#manufacturereInfoNO').val();
+
+                //현쟈와 중복되는 정보 제거하기
+                removeCurrentServiceFromData();
+
+                // autocomplete - 자동완성기능 설정하기
+                $("#autocomplete").autocomplete({
+                    // 사용자가 입력한 데이터와 비교
+                    source: tData,
+                    // 사용자가 입력한 데이터가 한글자일때부터
+                    minLength: 1,
+                    // 방향키로 내리다보면 선택하지 않았는데 선택이 된다 false 로 지정
+                    focus: function (event, ui) {
+                        return false;
+                    },
+                    //데이터 선택했을때 실행
+                    select: function (event, ui) {
+
+                        count++;
+                        // 선택한 서비스를 출력해주기 위함
+                        $("#selectService").append('<a href="#" class="btn btn-light btn-icon-split"><span class="icon text-gray-600"><i class="fas fa-times"></i></span><span class="text" name = "serviceNo" value="' + dataMap.get(ui.item.value) + '" id="uiValue' + count + '">' + ui.item.value + '</span></a>')
+
+                        serviceNo = dataMap.get(ui.item.value);
+
+                        //여기서 registerServiceToManuInfo를 호출하자.
+                        registerServiceToManuInfo(manuInfoNo, serviceNo);
+
+                        // 선택한 서비스 배열에서 삭제
+                        tData = tData.filter((e) => e !== ui.item.value);
+
+                        // 재정의한 배열을 다시 바인딩
+                        $("#autocomplete").autocomplete({source: tData});
+                    }
+                });
+
+            });
+
+            function registerServiceToManuInfo(manuInfoNo, serviceNo) {
+
+                $.ajax({
+                    type       : 'POST',
+                    url        : '/api/post/manuService/' + manuInfoNo + '/' + serviceNo,
+                    dataType   : 'TEXT',
+                    contentType: 'application/json; charset=utf-8',
+                }).done(function () {
+                    alert("서비스가 업체 정보에 추가되었습니다.")
+                }).fail(function (error) {
+                    alert(JSON.stringify(error));
+                });
+            }
+
+            function removeServiceToManuInfo(manuInfoNo, serviceNo) {
+
+                $.ajax({
+                    type       : 'DELETE',
+                    url        : '/api/post/manuService/' + manuInfoNo + '/' + serviceNo,
+                    dataType   : 'TEXT',
+                    contentType: 'application/json; charset=utf-8',
+                }).done(function () {
+                    alert("서비스가 업체 정보에서 제거되었습니다.")
+                }).fail(function (error) {
+                    alert(JSON.stringify(error));
+                });
+            }
+
+
+            function removeCurrentServiceFromData() {
+
+                currentServices = document.querySelectorAll('.btn-icon-split');
+                $(currentServices).each(function () {
+                    //서비스 내의 정보들을 가져와서 제거할 것.
+                    tData = tData.filter((e) => e !== $(this)[0].innerText);
+                })
+                console.log(currentServices);
+            }
+
+
+        </script>
+
+
+    </th:block>
+</th:block>
